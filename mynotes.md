@@ -1,7 +1,7 @@
 ```
 
 kind build node-image --image=t2
-kinde delete cluster
+kind delete cluster
 kind create cluster --image=t2 --config configs/kind_basic.yaml
 ```
 
