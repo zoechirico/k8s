@@ -21,6 +21,10 @@ curl -L https://istio.io/downloadIstio | sh -
 cd istio-1.8.1
 cp bin/istioctl /usr/local/bin/istioctl
 
+
+mkdir -p /pod-50g
+chown -R codespace.codespace /pod-50g
+
 chown -R codespace.codespace /home/codespace/workspace/k8s/istio-1.8.1
 
 
