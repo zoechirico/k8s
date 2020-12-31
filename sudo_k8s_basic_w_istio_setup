@@ -1,0 +1,46 @@
+#!/bin/bash
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx_v0.9.1_linux_x86_64.tar.gz
+tar -xzf kubectx_v0.9.1_linux_x86_64.tar.gz 
+mv kubectx /usr/local/bin/kubectx
+
+wget https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens_v0.9.1_linux_x86_64.tar.gz
+tar -xzf kubens_v0.9.1_linux_x86_64.tar.gz 
+mv kubens /usr/local/bin/kubens
+
+rm kubens_v0.9.1_linux_x86_64.tar.gz 
+rm kubectx_v0.9.1_linux_x86_64.tar.gz 
+
+
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x ./kubectl
+mv ./kubectl /usr/local/bin/k
+
+
+
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-1.8.1
+cp bin/istioctl /usr/local/bin/istioctl
+
+chown -R codespace.codespace /home/codespace/workspace/k8s/istio-1.8.1
+
+
+wget https://github.com/vmware-tanzu/octant/releases/download/v0.16.3/octant_0.16.3_Linux-64bit.tar.gz
+tar -xzf octant_0.16.3_Linux-64bit.tar.gz 
+mv octant_0.16.3_Linux-64bit/octant /usr/local/bin/octant
+
+
+export GOPATH=/home/codespace
+export GOBIN=/home/codespace/bin
+mkdir -p $GOBIN
+
+
+go get sigs.k8s.io/kind
+
+if [[ -f "/home/codespace/bin/kind" ]]; then
+    cp /home/codespace/bin/kind /usr/local/bin/kind
+fi
+if [[ -f "/go/bin/kind" ]]; then
+    cp /go/bin/kind /usr/local/bin/kind
+fi
+
+
