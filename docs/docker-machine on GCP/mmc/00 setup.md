@@ -8,8 +8,8 @@ https://github.com/kubernetes/kubernetes/blob/8725c3bf12cfd3697464136201216fa05d
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/rommel/.googleAuthPath/k8s-dev-cwxstat.json
-KUBE_BUILD_VM=k8s-build
-KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
+export KUBE_BUILD_VM=k8s-build
+export KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
 
 docker-machine create --driver google \
   --google-project ${KUBE_BUILD_GCE_PROJECT} \
@@ -56,7 +56,8 @@ CONTAINER ID   IMAGE                          COMMAND                  CREATED  
 docker-machine ssh ${KUBE_BUILD_VM} -L 59701:localhost:59701 -N &
 docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
 
-
+export PORT=$(docker ps --filter "name=kind-control-plane" --format "{{.Ports}}"| sed -e 's/.*://'|sed -e 's/->.*//g')
+docker-machine ssh ${KUBE_BUILD_VM} -L ${PORT}:localhost:${PORT} -N &
 
 ```
 
@@ -64,7 +65,18 @@ docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
 ## Stop
 
 ```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/rommel/.googleAuthPath/k8s-dev-cwxstat.json
+export KUBE_BUILD_VM=k8s-build
+export KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
+
 docker-machine stop ${KUBE_BUILD_VM}
+
+
+# to remove
 docker-machine rm ${KUBE_BUILD_VM}
+
+
+# to start
+docker-machine start ${KUBE_BUILD_VM}
 
 ```

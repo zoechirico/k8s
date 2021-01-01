@@ -62,3 +62,15 @@ curl -s "http://localhost:3050/productpage" | grep -o "<title>.*</title>"
 ```batch
 watch curl -s "http://localhost:3050/productpage" | grep -o "<title>.*</title>"
 ```
+
+# debugging
+```bash
+istioctl install --set values.global.logging.level=debug
+```
+
+
+# Dashboard
+
+```bash
+istioctl dashboard kiali
+```
