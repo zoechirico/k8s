@@ -6,19 +6,42 @@ and
 https://github.com/kubernetes/kubernetes/blob/8725c3bf12cfd3697464136201216fa05dc662d2/build/README.md
 
 
+# Start Steps (Already Created)
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/rommel/.googleAuthPath/k8s-dev-cwxstat.json
-KUBE_BUILD_VM=k8s-build
-KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
+export KUBE_BUILD_VM=k8s-build
+export KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
+# Start computer
+docker-machine start ${KUBE_BUILD_VM}
+
+# Set environment
+eval $(docker-machine env ${KUBE_BUILD_VM})
+docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
+export PORT=$(docker ps --filter "name=kind-control-plane" --format "{{.Ports}}"| sed -e 's/.*://'|sed -e 's/->.*//g')
+docker-machine ssh ${KUBE_BUILD_VM} -L ${PORT}:localhost:${PORT} -N &
+
+```
+
+
+
+Note... `rm -rf ~/.docker/machine/machines/k8s-build`  is needed.
+
+```bash
+
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/rommel/.googleAuthPath/k8s-dev-cwxstat.json
+export KUBE_BUILD_VM=k8s-build
+export KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
 
 docker-machine create --driver google \
   --google-project ${KUBE_BUILD_GCE_PROJECT} \
   --google-zone us-central1-f \
-  --google-machine-type=n1-standard-8 \
-  --google-disk-size=50 \
-  --google-preemptible=true \
+  --google-machine-type=n1-standard-4 \
+  --google-disk-size=100 \
+  --google-preemptible=false \
+  --google-address=35.193.101.35  \
   --google-disk-type=pd-ssd \
   ${KUBE_BUILD_VM}
+
 ```
 
 Next run
@@ -39,6 +62,8 @@ kind create cluster --image=quay.io/mchirico/k8s:v1.20.1 --config configs/kind_b
 ```
 
 
+
+
 Find out what port is being used.  Below, you can see it is **59701**
 
 ```bash
@@ -56,7 +81,8 @@ CONTAINER ID   IMAGE                          COMMAND                  CREATED  
 docker-machine ssh ${KUBE_BUILD_VM} -L 59701:localhost:59701 -N &
 docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
 
-
+export PORT=$(docker ps --filter "name=kind-control-plane" --format "{{.Ports}}"| sed -e 's/.*://'|sed -e 's/->.*//g')
+docker-machine ssh ${KUBE_BUILD_VM} -L ${PORT}:localhost:${PORT} -N &
 
 ```
 
@@ -64,7 +90,18 @@ docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
 ## Stop
 
 ```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/Users/rommel/.googleAuthPath/k8s-dev-cwxstat.json
+export KUBE_BUILD_VM=k8s-build
+export KUBE_BUILD_GCE_PROJECT=k8s-dev-cwxstat
+
 docker-machine stop ${KUBE_BUILD_VM}
+
+
+# to remove
 docker-machine rm ${KUBE_BUILD_VM}
+
+
+# to start
+docker-machine start ${KUBE_BUILD_VM}
 
 ```
