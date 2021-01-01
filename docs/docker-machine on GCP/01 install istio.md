@@ -53,4 +53,12 @@ export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgatew
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 
 curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
+
+curl -s "http://localhost:3050/productpage" | grep -o "<title>.*</title>"
+```
+
+# watch
+
+```batch
+watch curl -s "http://localhost:3050/productpage" | grep -o "<title>.*</title>"
 ```
