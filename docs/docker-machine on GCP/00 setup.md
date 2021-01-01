@@ -54,6 +54,9 @@ CONTAINER ID   IMAGE                          COMMAND                  CREATED  
 
 # forward local 59701 to that machine so that rsync works
 docker-machine ssh ${KUBE_BUILD_VM} -L 59701:localhost:59701 -N &
+docker-machine ssh ${KUBE_BUILD_VM} -L 3050:172.18.1.128:80 -N &
+
+
 
 ```
 
